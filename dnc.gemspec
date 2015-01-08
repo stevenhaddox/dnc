@@ -18,6 +18,20 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.7"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.required_ruby_version = '>= 1.9.3'
+  spec.add_dependency 'logging', '~> 1.8'
+
+  spec.add_development_dependency 'awesome_print', '~> 1.2'
+  spec.add_development_dependency 'bundler', '~> 1.6'
+  spec.add_development_dependency 'coveralls', '~> 0.7'
+  spec.add_development_dependency 'rack', '~> 1.5'
+  spec.add_development_dependency 'rack-test', '~> 0.6'
+  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rubocop', '~> 0.27'
+  spec.add_development_dependency 'rspec', '~> 3.1'
+  spec.add_development_dependency 'simplecov', '~> 0.9'
+  spec.add_development_dependency 'yard', '~> 0.8'
+
+  spec.cert_chain  = ['certs/stevenhaddox.pem']
+  spec.signing_key = File.expand_path("~/.gem/certs/gem-private_key.pem") if $0 =~ /gem\z/
 end
