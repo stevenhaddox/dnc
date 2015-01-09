@@ -42,8 +42,8 @@ describe DN do
     end
 
     it "should handle multiple RDN key value pairs in the CN and return an array of elements" do
-      dn = DN.new(dn_string: '/C=US/O=RB/OU=DEV/OU=JS/OU=People/DC=example/DC=org/CN=Last First M (initial)+email=initial@example.org')
-      expect(dn.cn).to eq(['INITIAL@EXAMPLE.ORG', 'LAST FIRST M (INITIAL)'])
+      dn = DN.new(dn_string: '/C=US/O=RB/OU=DEV/OU=JS/OU=People/DC=example/DC=org/CN=Last First M (initial)+email=initial@example.org+office=home')
+      expect(dn.cn).to eq({CN: 'LAST FIRST M (INITIAL)', EMAIL: 'INITIAL@EXAMPLE.ORG', OFFICE: 'HOME'})
     end
   end
 
@@ -54,5 +54,4 @@ describe DN do
     end
 
   end
-
 end

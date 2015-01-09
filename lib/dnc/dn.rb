@@ -67,18 +67,37 @@ class DN
   # Parse @dn_string RDNs and assign them to DN attributes
   def parse_rdns_to_attrs
     split_by_delimiter.each do |rdn|
-      rdn_array = rdn.split('=')
-      method = rdn_array[0].downcase.to_sym
-      value  = rdn_array[1]
-      unless send(method).nil? || send(method).empty?
-        send("#{method}=", Array.wrap(send(method)))
-        send("#{method}").insert(0, value)
+      unless rdn.include?('+')
+        parse_top_level_rdn(rdn)
       else
-        send("#{method}=", value)
+        parse_nested_rdn(rdn)
       end
     end
 
     self
+  end
+
+  def parse_top_level_rdn(rdn)
+    rdn_array = rdn.split('=')
+    method = rdn_array[0].downcase.to_sym
+    value  = rdn_array[1]
+    unless send(method).nil? || send(method).empty?
+      send("#{method}=", Array.wrap(send(method)))
+      send("#{method}").insert(0, value)
+    else
+      send("#{method}=", value)
+    end
+  end
+
+  def parse_nested_rdn(rdn)
+    rdn_keypairs = {}
+    rdn_array = rdn.split('+')
+    rdn_array.each do |string|
+      keypair = string.split('=')
+      rdn_keypairs[keypair[0].to_sym] = keypair[1]
+    end
+
+    send("#{rdn_keypairs.keys.first.downcase}=", rdn_keypairs)
   end
 
   # Ensure order of DN elements is proper for CAS server with ',' delimiter
