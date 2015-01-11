@@ -9,9 +9,7 @@ describe DN do
   #
   # Unit specs
   #
-
   describe "#new" do
-
     it "should create a new DN object when valid" do
       expect(valid_subject.class.to_s).to eq(DN.to_s)
     end
@@ -48,10 +46,22 @@ describe DN do
   end
 
   describe "validations" do
-
     it "should require a parsable DN string" do
-      pending 'pending'
+      expect{ DN.new(dn_string: "") }.to raise_error(DnDelimiterUnparsableError)
+      expect{ DN.new(dn_string: "nope") }.to raise_error(DnDelimiterUnparsableError)
+    end
+  end
+
+  describe ".to_s" do
+    it "should return a properly formatted string for CAS & RFC1779 use" do
+      expect(valid_subject.to_s).to eq(dn_to_s)
     end
 
+    it "should parse common DN formats into DN objects" do
+      pending 'Parse & verify lots of common DN formats...'
+#      File.read('spec/fixtures/common_dns.txt').each do |raw_dn|
+#        expect(raw_dn.to_dn.to_yaml).to eq('')
+#      end
+    end
   end
 end

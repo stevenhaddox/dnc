@@ -1,11 +1,9 @@
 require 'logging'
 
-# Custom exception for strings that can't be parsed as X509 Certificates
-class DnDelimiterUnparseableError < TypeError; end
-# Custom exception for strings that can't be parsed as X509 Certificates
-class DnStringUnparseableError < TypeError; end
-# Custom exception for strings that can't be parsed as X509 Certificates
-class DoingItWrongError < TypeError; end
+# Custom exception for strings that can't be parsed as per RFC1779
+class DnDelimiterUnparsableError < TypeError; end
+# Custom exception for strings that can't be parsed as per RFC1779
+class DnStringUnparsableError < TypeError; end
 
 # Accepts various DN strings and returns a DN object
 class DN
@@ -33,27 +31,47 @@ class DN
     @logger ||= Kernel.const_defined?('Rails') ? Rails.logger : logger
   end
 
-  # Returns the DN's Common Name value
-  def cn
-    Array.wrap(@cn)
-  end
-
-  # Returns the DN's Organizational Unit value
-  def ou
-    Array.wrap(@ou)
-  end
-
-  # Returns the DN's DC (Domain C?) value
-  def dc
-    Array.wrap(@dc)
-  end
-
   # Split passed DN by identified delimiter
   def split_by_delimiter
     dn_string.split(delimiter).reject!(&:empty?)
   end
 
+  # Convert DN object into a string
+  def to_s
+
+  end
+
   private
+
+  # CN as a string
+  def cn_string
+
+  end
+
+  # L as a string
+  def l_string
+
+  end
+
+  def st_string
+
+  end
+
+  def o_string
+
+  end
+
+  def c_string
+
+  end
+
+  def street_string
+
+  end
+
+  def dc_string
+
+  end
 
   # Orchestrates reformatting DN to expected element order for LDAP auth.
   def format_dn
@@ -126,16 +144,8 @@ class DN
       logger.debug("DN.identify_delimeter: #{dn_string}")
       delimiter_regexp.match(dn_string)[1]
     rescue
-      fail DnDelimiterUnparseableError, "DN delimiter could not be identified."
-    end
-  end
-
-  def validate_delimiter
-    begin
-      raise "Regex goes here!"
-    rescue
-      fail DoingItWrongError, "dnc: Please update RDNs to follow RFC1779
-        specifications.\nDN being parsed was: #{original_dn}"
+      fail DnDelimiterUnparsableError, "DN delimiter could not be identified
+             \r\nPlease ensure your string complies with RFC1779 formatting."
     end
   end
 end
