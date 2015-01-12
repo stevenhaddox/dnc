@@ -1,18 +1,12 @@
-/C=US/O=RB/OU=DEV/OU=RAILS/OU=People/CN=Last First (initial)
-/CN=Smith John+initials=cpt/OU=People/OU=RAILS/OU=DEV/O=RB/C=GB
-CN=John Smith+email=jsmith@mayflower.org,O=ISODE Consortium,C=GB
-C=GB,O=ISODE Consortium,CN=John Smith+email=jsmith@mayflower.org
-/C=GB/O=RB/OU=DEV/OU=RAILS/OU=People/CN=Smith John+initials=cpt
-/C=US/O=RB/OU=DEV/OU=JS/OU=People/CN=Last First M (initial)
-C=UK, ST=England, L=London, O=LShift Ltd., OU=Development, CN=Lee Coomber/UID=123456
-CN=Marshall T. Rose, O=Dover Beach Consulting, L=Santa Clara, ST=California, C=US
-CN=FTAM Service, CN=Bells, OU=Computer Science, O=University College London, C=GB
-CN=Markus Kuhn, O=University of Erlangen, C=DE
-CN=Steve Kille, O=ISODE Consortium, C=GB
-CN=Steve Kille,O=ISODE Consortium,C=GB
-
-CN=C E B\sid=ceb\foo=bar, C=GB, O=foo
-
-
-# Fails validation
-C=GB, O=foo, CN=C E B\sid=ceb\foo=bar
+/C=US/O=RB/OU=DEV/OU=RAILS/OU=People/CN=Last First (initial)%CN=LAST FIRST (INITIAL),OU=PEOPLE,OU=RAILS,OU=DEV,O=RB,C=US
+/CN=Smith John+initials=cpt/OU=People/OU=RAILS/OU=DEV/O=RB/C=GB%CN=
+CN=John Smith+email=jsmith@mayflower.org,O=ISODE Consortium,C=GB C=GB,O=ISODE Consortium%CN=
+/C=GB/O=RB/OU=DEV/OU=RAILS/OU=People/CN=Smith John+initials=cpt%CN=
+/C=US/O=RB/OU=DEV/OU=JS/OU=People/CN=Last First M (initial)%CN=
+CN=Marshall T. Rose, O=Dover Beach Consulting, L=Santa Clara, ST=California, C=US%CN=
+CN=FTAM Service, CN=Bells, OU=Computer Science, O=University College London, C=GB%CN=
+CN=Markus Kuhn, O=University of Erlangen, C=DE%CN=
+CN=Steve Kille, O=ISODE Consortium, C=GB%CN=
+CN=Steve Kille,O=ISODE Consortium,C=GB%CN=
+CN=C E B\sid=ceb\foo=bar, C=GB, O=foo%CN=
+C=UK, ST=England, L=London, O=LShift Ltd., OU=Development, CN=Lee Coomber/UID=123456%CN=

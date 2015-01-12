@@ -39,14 +39,12 @@ class DN
   # Convert DN object into a string
   def to_s
     return_string = ""
-    return_string += cn_string     unless cn.nil?     || cn.empty?
-    return_string += l_string      unless l.nil?      || l.empty?
-    return_string += st_string     unless st.nil?     || st.empty?
-    return_string += o_string      unless o.nil?      || o.empty?
-    return_string += ou_string     unless ou.nil?     || ou.empty?
-    return_string += c_string      unless c.nil?      || c.empty?
-    return_string += street_string unless street.nil? || street.empty?
-    return_string += dc_string     unless dc.nil?     || dc.empty?
+    %w(cn dc l st ou o c street).each do |string_name|
+      unless self.send(string_name.to_sym).nil? || self.send(string_name.to_sym).empty?
+        return_string += "," unless return_string.empty?
+        return_string += self.send("#{string_name}_string".to_sym)
+      end
+    end
 
     return_string
   end
@@ -129,29 +127,47 @@ class DN
     end
   end
 
-  # Catch *_string methods and define them to return strings by value's class
-  def method_missing(method, *args)
-    ap "method_missing for #{method}"
-    # Dynamically handle DN *_string methods by object type returned
-    if method.to_s.include?('_string')
-      getter_method = method.to_s.gsub('_string','')
-      method_value = send(getter_method.to_sym)
-      dynamic_strings(method, getter_method, method_value.class)
-    end
+  def cn_string
+    dynamic_strings('cn', cn.class)
+  end
 
-    super
+  def l_string
+    dynamic_strings('l', l.class)
+  end
+
+  def st_string
+    dynamic_strings('st', st.class)
+  end
+
+  def o_string
+    dynamic_strings('o', o.class)
+  end
+
+  def ou_string
+    dynamic_strings('ou', ou.class)
+  end
+
+  def c_string
+    dynamic_strings('c', c.class)
+  end
+
+  def street_string
+    dynamic_strings('street', street.class)
+  end
+
+  def dc_string
+    dynamic_strings('dc', dc.class)
   end
 
   # Identify which RDN string formatteer to call by value's class
-  def dynamic_strings(string_method, getter_method, value_class)
-    ap ".dynamic_strings: #{string_method}, #{getter_method}, #{value_class}"
+  def dynamic_strings(getter_method, value_class)
     case value_class.to_s
     when Array.to_s
-      dn_array_to_string(string_method, getter_method)
+      dn_array_to_string(getter_method)
     when Hash.to_s
-      dn_hash_to_string(string_method, getter_method)
+      dn_hash_to_string(getter_method)
     when String.to_s
-      dn_string_to_string(string_method, getter_method)
+      dn_string_to_string(getter_method)
     else
       logger.error "Invalid string accessor method class: #{value_class}"
       fail "Invalid string accessor method class: #{value_class}"
@@ -163,34 +179,31 @@ class DN
   # in DN attrs and converting them into a string format based upon their class
 
   # Dynamically define a method to return DN array values as string format
-  def dn_array_to_string(string_method, getter_method)
-    ap "Definining: #{string_method.to_sym}"
-    self.class.send(:define_method, string_method.to_sym) do
-      ap "Inside #{string_method.to_sym}"
-      return_string = ""
-      value = self.send(getter_method.to_sym)
-      value.each do |element|
-        return_string += "," unless return_string.empty?
-        return_string += "#{getter_method.to_s.upcase}=element"
-      end
-      return return_string
+  def dn_array_to_string(getter_method)
+    return_string = ""
+    value = self.send(getter_method.to_sym)
+    value.each do |element|
+      return_string += "," unless return_string.empty?
+      return_string += "#{getter_method.to_s.upcase}=#{element}"
     end
-    ap "#{string_method} defined...?"
+
+    return_string
   end
 
   # Dynamically define a method to return DN hash values as string format
-  def dn_hash_to_string(string_method, getter_method)
-    ap "Definining: #{string_method.to_sym}"
-    self.class.send(:define_method, string_method.to_sym) do
-
+  def dn_hash_to_string(getter_method)
+    return_string = ""
+    value = self.send(getter_method.to_sym)
+    value.each do |key, string|
+      return_string += "+" unless return_string.empty?
+      return_string += "#{key}=#{string}"
     end
+
+    return_string
   end
 
   # Dynamically define a method to return DN string values as string format
-  def dn_string_to_string(string_method, getter_method)
-    ap "Definining: #{string_method.to_sym}"
-    self.class.send(:define_method, string_method.to_sym) do
-
-    end
+  def dn_string_to_string(getter_method)
+    "#{getter_method.to_s.upcase}=#{self.send(getter_method.to_sym)}"
   end
 end

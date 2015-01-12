@@ -54,14 +54,19 @@ describe DN do
 
   describe ".to_s" do
     it "should return a properly formatted string for CAS & RFC1779 use" do
-      expect(valid_subject.to_s).to eq(dn_to_s)
+      dn = DN.new(dn_string: '/C=US/O=RB/OU=DEV/OU=JS/OU=People/DC=example/DC=org/CN=Last First M (initial)+email=initial@example.org+office=home')
+      dn_string = 'CN=LAST FIRST M (INITIAL)+EMAIL=INITIAL@EXAMPLE.ORG+OFFICE=HOME,DC=ORG,DC=EXAMPLE,OU=PEOPLE,OU=JS,OU=DEV,O=RB,C=US'
+      expect(dn.to_s).to eq(dn_string)
     end
 
     it "should parse common DN formats into DN objects" do
-      pending 'Parse & verify lots of common DN formats...'
-#      File.read('spec/fixtures/common_dns.txt').each do |raw_dn|
-#        expect(raw_dn.to_dn.to_yaml).to eq('')
-#      end
+      File.readlines('spec/fixtures/common_dns.txt').each do |line|
+        dn_in = line.split('%')[0].rstrip
+        dn_out = line.split('%')[1].rstrip
+        ap dn_in
+        ap dn_out
+        expect(DN.new(dn_string: dn_in).to_s).to eq(dn_out)
+      end
     end
   end
 end
