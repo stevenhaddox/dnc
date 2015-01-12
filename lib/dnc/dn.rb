@@ -53,35 +53,6 @@ class DN
 
   private
 
-  # Catch *_string methods and define them to return strings by value's class
-  def method_missing(method, *args)
-    ap "method_missing for #{method}"
-    # Dynamically handle DN *_string methods by object type returned
-    if method.to_s.include?('_string')
-      getter_method = method.to_s.gsub('_string','')
-      method_value = send(getter_method.to_sym)
-      dynamic_strings(method, getter_method, method_value.class)
-    end
-
-    super
-  end
-
-  # Identify which RDN string formatteer to call by value's class
-  def dynamic_strings(string_method, getter_method, value_class)
-    ap ".dynamic_strings: #{string_method}, #{getter_method}, #{value_class}"
-    case value_class.to_s
-    when Array.to_s
-      dn_array_to_string(string_method, getter_method)
-    when Hash.to_s
-      dn_hash_to_string(string_method, getter_method)
-    when String.to_s
-      dn_string_to_string(string_method, getter_method)
-    else
-      logger.error "Invalid string accessor method class: #{value_class}"
-      fail "Invalid string accessor method class: #{value_class}"
-    end
-  end
-
   # Orchestrates reformatting DN to expected element order for LDAP auth.
   def format_dn
     dn_string.upcase! # Upcase all DNs for consistency
@@ -158,30 +129,67 @@ class DN
     end
   end
 
+  # Catch *_string methods and define them to return strings by value's class
+  def method_missing(method, *args)
+    ap "method_missing for #{method}"
+    # Dynamically handle DN *_string methods by object type returned
+    if method.to_s.include?('_string')
+      getter_method = method.to_s.gsub('_string','')
+      method_value = send(getter_method.to_sym)
+      dynamic_strings(method, getter_method, method_value.class)
+    end
+
+    super
+  end
+
+  # Identify which RDN string formatteer to call by value's class
+  def dynamic_strings(string_method, getter_method, value_class)
+    ap ".dynamic_strings: #{string_method}, #{getter_method}, #{value_class}"
+    case value_class.to_s
+    when Array.to_s
+      dn_array_to_string(string_method, getter_method)
+    when Hash.to_s
+      dn_hash_to_string(string_method, getter_method)
+    when String.to_s
+      dn_string_to_string(string_method, getter_method)
+    else
+      logger.error "Invalid string accessor method class: #{value_class}"
+      fail "Invalid string accessor method class: #{value_class}"
+    end
+  end
+
   # NOTE:
   # The following methods are a code smell, they handle formatting the values
   # in DN attrs and converting them into a string format based upon their class
 
   # Dynamically define a method to return DN array values as string format
   def dn_array_to_string(string_method, getter_method)
-    ap "Definiing: #{string_method.to_sym}"
-    self.class.define_method(string_method.to_sym) do
-
+    ap "Definining: #{string_method.to_sym}"
+    self.class.send(:define_method, string_method.to_sym) do
+      ap "Inside #{string_method.to_sym}"
+      return_string = ""
+      value = self.send(getter_method.to_sym)
+      value.each do |element|
+        return_string += "," unless return_string.empty?
+        return_string += "#{getter_method.to_s.upcase}=element"
+      end
+      return return_string
     end
+    ap "#{string_method} defined...?"
   end
 
   # Dynamically define a method to return DN hash values as string format
   def dn_hash_to_string(string_method, getter_method)
-    ap "Definiing: #{string_method.to_sym}"
-    self.class.define_method(string_method.to_sym) do
+    ap "Definining: #{string_method.to_sym}"
+    self.class.send(:define_method, string_method.to_sym) do
 
     end
   end
 
   # Dynamically define a method to return DN string values as string format
   def dn_string_to_string(string_method, getter_method)
-    ap "Definiing: #{string_method.to_sym}"
-    self.class.define_method(string_method.to_sym) do
+    ap "Definining: #{string_method.to_sym}"
+    self.class.send(:define_method, string_method.to_sym) do
 
     end
   end
