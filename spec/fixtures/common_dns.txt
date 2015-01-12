@@ -1,12 +1,12 @@
 /C=US/O=RB/OU=DEV/OU=RAILS/OU=People/CN=Last First (initial)%CN=LAST FIRST (INITIAL),OU=PEOPLE,OU=RAILS,OU=DEV,O=RB,C=US
-/CN=Smith John+initials=cpt/OU=People/OU=RAILS/OU=DEV/O=RB/C=GB%CN=
-CN=John Smith+email=jsmith@mayflower.org,O=ISODE Consortium,C=GB C=GB,O=ISODE Consortium%CN=
-/C=GB/O=RB/OU=DEV/OU=RAILS/OU=People/CN=Smith John+initials=cpt%CN=
-/C=US/O=RB/OU=DEV/OU=JS/OU=People/CN=Last First M (initial)%CN=
-CN=Marshall T. Rose, O=Dover Beach Consulting, L=Santa Clara, ST=California, C=US%CN=
-CN=FTAM Service, CN=Bells, OU=Computer Science, O=University College London, C=GB%CN=
-CN=Markus Kuhn, O=University of Erlangen, C=DE%CN=
-CN=Steve Kille, O=ISODE Consortium, C=GB%CN=
-CN=Steve Kille,O=ISODE Consortium,C=GB%CN=
-CN=C E B\sid=ceb\foo=bar, C=GB, O=foo%CN=
-C=UK, ST=England, L=London, O=LShift Ltd., OU=Development, CN=Lee Coomber/UID=123456%CN=
+/CN=Smith John+initials=cpt/OU=People/OU=RAILS/OU=DEV/O=RB/C=GB%CN=SMITH JOHN+INITIALS=CPT,OU=PEOPLE,OU=RAILS,OU=DEV,O=RB,C=GB
+CN=John Smith+email=jsmith@mayflower.org,O=ISODE Consortium,C=GB,O=ISODE Consortium%CN=JOHN SMITH+EMAIL=JSMITH@MAYFLOWER.ORG,O=ISODE CONSORTIUM,C=GB,O=ISODE
+/C=GB/O=RB/OU=DEV/OU=RAILS/OU=People/CN=Smith John+initials=cpt%CN=SMITH JOHN+INITIALS=CPT,OU=PEOPLE,OU=RAILS,OU=DEV,O=RB,C=GB
+/C=US/O=RB/OU=DEV/OU=JS/OU=People/CN=Last First M (initial)%CN=LAST FIRST M (INITIAL),OU=PEOPLE,OU=JS,OU=DEV,O=RB,C=US
+CN=Marshall T. Rose, O=Dover Beach Consulting, L=Santa Clara, ST=California, C=US%CN=MARSHALL T. ROSE,O=DOVER BEACH CONSULTING,L=SANTA CLARA,ST=CALIFORNIA,C=US
+CN=FTAM Service, CN=Bells, OU=Computer Science, O=University College London, C=GB%CN=FTAM SERVICE,CN=BELLS,OU=COMPUTER SCIENCE,O=UNIVERSITY COLLEGE LONDON,C=GB
+CN=Markus Kuhn, O=University of Erlangen, C=DE%CN=MARKUS KUHN,O=UNIVERSITY OF ERLANGEN,C=DE
+CN=Steve Kille, O=ISODE Consortium, C=DE%CN=STEVE KILLE,O=ISODE CONSORTIUM,C=DE
+CN=Steve Kille,O=ISODE Consortium,C=GB%CN=STEVE KILLE,O=ISODE CONSORTIUM,C=GB
+CN=C E B\sid=ceb\foo=bar, C=GB, O=foo%CN=C E B\sid=ceb\foo=bar,C=GB,O=FOO
+C=UK, ST=England, L=London, O=LShift Ltd., OU=Development, CN=Lee Coomber/UID=123456%CN=LEE COOMBER/UID=123456,OU=DEVELOPMENT,O=LSHIFT LTD.,L=LONDON,ST=ENGLAND,C=UK
