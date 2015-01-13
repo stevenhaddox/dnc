@@ -61,10 +61,10 @@ describe DN do
 
     it "should parse common DN formats into DN objects" do
       File.readlines('spec/fixtures/common_dns.txt').each do |line|
-        dn_in = line.split('%')[0].rstrip
-        dn_out = line.split('%')[1].rstrip
-        ap dn_in
-        ap dn_out
+        dn_in = line.rstrip.split('%')[0]
+        dn_out = line.rstrip.split('%')[1]
+        #ap dn_in
+        #ap dn_out
         expect(DN.new(dn_string: dn_in).to_s).to eq(dn_out)
       end
     end

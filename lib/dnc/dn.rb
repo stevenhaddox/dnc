@@ -33,7 +33,7 @@ class DN
 
   # Split passed DN by identified delimiter
   def split_by_delimiter
-    dn_string.split(delimiter).reject!(&:empty?)
+    dn_string.split(delimiter).reject(&:empty?)
   end
 
   # Convert DN object into a string
@@ -56,7 +56,6 @@ class DN
     dn_string.upcase! # Upcase all DNs for consistency
     format_dn_element_order unless dn_begins_properly?(dn_string)
     parse_rdns_to_attrs
-
     self
   end
 
@@ -101,6 +100,7 @@ class DN
     formatted_dn = split_by_delimiter.reverse.join(delimiter)
     if dn_begins_properly?(formatted_dn)
       dn_string = formatted_dn
+
     else
       fail("DN invalid format for LDAP authentication, DN:\r\n#{original_dn}")
     end
@@ -108,7 +108,7 @@ class DN
 
   # Verify DN starts with 'CN='
   def dn_begins_properly?(dn_str)
-    dn_str.nil? ? false : dn_str.start_with?('CN=')
+    dn_str.nil? ? false : (dn_str.start_with?("CN=") || dn_str.start_with?("#{delimiter}CN="))
   end
 
   # Regex to match the DN delimiter by getting the 2nd key non-word predecessor
