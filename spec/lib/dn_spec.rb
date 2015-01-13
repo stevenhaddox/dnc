@@ -60,6 +60,7 @@ describe DN do
     end
 
     it "should parse common DN formats into DN objects" do
+      pending "Finish this"
       File.readlines('spec/fixtures/common_dns.txt').each do |line|
         dn_in = line.rstrip.split('%')[0]
         dn_out = line.rstrip.split('%')[1]

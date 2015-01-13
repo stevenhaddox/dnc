@@ -20,7 +20,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'dnc'
+dn_string = 'CN=Some Valid, O=DN, OU=string'
+dn = DN.new(dn_string: dn_string)
+# Or:
+dn_string.to_dn
+# And:
+dn_string.to_dn.to_s
+```
 
 ## Contributing
 
