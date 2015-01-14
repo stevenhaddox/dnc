@@ -128,7 +128,9 @@ class DN
     if dn_str.nil?
       false
     else
-      dn_str.start_with?('CN=') || dn_str.start_with?("#{delimiter}CN=")
+      with_delim = "#{delimiter}/CN=".send(@transformation.to_sym)
+      without_delim = 'CN='.send(@transformation.to_sym)
+      dn_str.start_with?(without_delim) || dn_str.start_with?(with_delim)
     end
   end
 
