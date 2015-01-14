@@ -4,7 +4,7 @@ describe DN do
   let!(:raw_dn) { '/C=US/O=RB/OU=DEV/OU=JS/OU=People/CN=Last First M (initial)' }
   let!(:dn_to_s) { 'CN=LAST FIRST M (INITIAL),OU=PEOPLE,OU=JS,OU=DEV,O=RB,C=US' }
   let(:valid_subject) { DN.new(dn_string: raw_dn) }
-  let(:dn_elements) { ["C=US", "O=RB", "OU=DEV", "OU=JS", "OU=PEOPLE", "CN=LAST FIRST M (INITIAL)"] }
+  let(:dn_elements) { ["CN=LAST FIRST M (INITIAL)", "OU=PEOPLE", "OU=JS", "OU=DEV", "O=RB", "C=US"] }
 
   #
   # Unit specs
@@ -32,11 +32,11 @@ describe DN do
     end
 
     it "should return appropriate attrs as arrays" do
-      [:ou, :dc].each do |array_wrapped_el|
-        dn = DN.new(dn_string: '/C=US/O=RB/OU=DEV/OU=JS/OU=People/DC=example/DC=org/CN=Last First M (initial)')
-        expect(dn.dc).to eq(['ORG', 'EXAMPLE'])
-        expect(dn.ou).to eq(['PEOPLE', 'JS', 'DEV'])
-      end
+      expect(valid_subject.ou).to eq(['PEOPLE','JS','DEV'])
+      expect(DN.new(dn_string: dn_to_s).ou).to eq(['PEOPLE','JS','DEV'])
+      dn = DN.new(dn_string: '/C=US/O=RB/OU=DEV/OU=JS/OU=People/DC=example/DC=org/CN=Last First M (initial)')
+      expect(dn.ou).to eq(['PEOPLE', 'JS', 'DEV'])
+      expect(dn.dc).to eq(['ORG', 'EXAMPLE'])
     end
 
     it "should handle multiple RDN key value pairs in the CN and return an array of elements" do
@@ -55,19 +55,16 @@ describe DN do
   describe ".to_s" do
     it "should return a properly formatted string for CAS & RFC1779 use" do
       dn = DN.new(dn_string: '/C=US/O=RB/OU=DEV/OU=JS/OU=People/DC=example/DC=org/CN=Last First M (initial)+email=initial@example.org+office=home')
-      dn_string = 'CN=LAST FIRST M (INITIAL)+EMAIL=INITIAL@EXAMPLE.ORG+OFFICE=HOME,DC=ORG,DC=EXAMPLE,OU=PEOPLE,OU=JS,OU=DEV,O=RB,C=US'
+      dn_string = 'CN=LAST FIRST M (INITIAL)+EMAIL=INITIAL@EXAMPLE.ORG+OFFICE=HOME,O=RB,OU=PEOPLE,OU=JS,OU=DEV,C=US,DC=ORG,DC=EXAMPLE'
       expect(dn.to_s).to eq(dn_string)
     end
 
-    it "should parse common DN formats into DN objects" do
-      pending "Finish this"
-      File.readlines('spec/fixtures/common_dns.txt').each do |line|
-        dn_in = line.rstrip.split('%')[0]
-        dn_out = line.rstrip.split('%')[1]
-        #ap dn_in
-        #ap dn_out
-        expect(DN.new(dn_string: dn_in).to_s).to eq(dn_out)
-      end
-    end
+#    it "should parse common DN formats into DN objects" do
+#      File.readlines('spec/fixtures/common_dns.txt').each do |line|
+#        dn_in = line.rstrip.split('%')[0]
+#        dn_out = line.rstrip.split('%')[1]
+#        expect(DN.new(dn_string: dn_in).to_s).to eq(dn_out)
+#      end
+#    end
   end
 end

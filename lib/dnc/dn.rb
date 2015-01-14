@@ -7,20 +7,28 @@ class DnStringUnparsableError < TypeError; end
 
 # Accepts various DN strings and returns a DN object
 class DN
-  attr_accessor :original_dn, :dn_string, :delimiter,
-    :cn, :l, :st, :o, :ou, :c, :street, :dc
+  attr_accessor :original_dn, :dn_string, :delimiter, :transformation,
+                :string_order, :cn, :l, :st, :ou, :o, :c, :street, :dc, :uid
 
   # Initialize the instance
   #
   # @param opts [Hash] Options hash for new DN instance attribute values
   # @param opts[:dn_string] [String] The DN string you want to parse into a DN
   # @param opts[:logger] User provided logger vs Rails / Logging default logger
-  def initialize(opts={})
-    @dn_string = opts[:dn_string]
-    @original_dn = dn_string
-    fail "dnc: dn_string parameter is **required**" if dn_string.nil?
-    @logger = opts[:logger].nil? ? logger : opts[:logger]
-    @delimiter = opts[:delimiter].nil? ? identify_delimiter : opts[:delimiter]
+  # NOTE: opts[transformation] defaults to "upcase"; use "to_s" for no change.
+  # @param opts[:transformation] [String] String method for changing DN.
+  # @param opts[:delimiter] [String] Specify a custom delimiter for dn_string
+  # NOTE: opts[:string_order] is a last resort config, defaults to RFC4514 spec.
+  # @param opts[:string_order] [Array] Specify the order of RDNs for .to_s
+  # @return [DN]
+  def initialize(opts = {})
+    @dn_string      = opts[:dn_string]
+    fail 'dnc: dn_string parameter is **required**' if dn_string.nil?
+    @original_dn    = dn_string
+    @logger         = opts[:logger] || logger
+    @transformation = opts[:transformation] || 'upcase'
+    @string_order   = opts[:string_order] || %w(cn l st o ou c street dc uid)
+    @delimiter      = opts[:delimiter] || identify_delimiter
     format_dn
   end
 
@@ -31,29 +39,30 @@ class DN
     @logger ||= Kernel.const_defined?('Rails') ? Rails.logger : logger
   end
 
-  # Split passed DN by identified delimiter
-  def split_by_delimiter
-    dn_string.split(delimiter).reject(&:empty?)
-  end
-
-  # Convert DN object into a string
+  # Convert DN object into a string (order follows RFC4514 LDAP specifications)
   def to_s
-    return_string = ""
-    %w(cn dc l st ou o c street).each do |string_name|
-      unless self.send(string_name.to_sym).nil? || self.send(string_name.to_sym).empty?
-        return_string += "," unless return_string.empty?
-        return_string += self.send("#{string_name}_string".to_sym)
+    return_string = ''
+    @string_order.each do |string_name|
+      unless send(string_name.to_sym).nil? || send(string_name.to_sym).empty?
+        return_string += ',' unless return_string.empty?
+        return_string += send("#{string_name}_string".to_sym)
       end
     end
 
     return_string
   end
 
+  # Split passed DN by identified delimiter
+  def split_by_delimiter
+    dn_string.split(delimiter).reject(&:empty?)
+  end
+
   private
 
   # Orchestrates reformatting DN to expected element order for LDAP auth.
   def format_dn
-    dn_string.upcase! # Upcase all DNs for consistency
+    # Transform dn_string for consistency / uniqueness
+    @dn_string = dn_string.send(transformation.to_sym)
     format_dn_element_order unless dn_begins_properly?(dn_string)
     parse_rdns_to_attrs
     self
@@ -62,10 +71,10 @@ class DN
   # Parse @dn_string RDNs and assign them to DN attributes
   def parse_rdns_to_attrs
     split_by_delimiter.each do |rdn|
-      unless rdn.include?('+')
-        parse_top_level_rdn(rdn)
-      else
+      if rdn.include?('+')
         parse_nested_rdn(rdn)
+      else
+        parse_top_level_rdn(rdn)
       end
     end
 
@@ -76,11 +85,11 @@ class DN
     rdn_array = rdn.split('=')
     method = rdn_array[0].downcase.to_sym
     value  = rdn_array[1]
-    unless send(method).nil? || send(method).empty?
-      send("#{method}=", Array.wrap(send(method)))
-      send("#{method}").insert(0, value)
-    else
+    if (send(method).nil? || send(method).empty?)
       send("#{method}=", value)
+    else
+      send("#{method}=", Array.wrap(send(method)))
+      send("#{method}").push(value)
     end
   end
 
@@ -95,20 +104,23 @@ class DN
     send("#{rdn_keypairs.keys.first.downcase}=", rdn_keypairs)
   end
 
-  # Ensure order of DN elements is proper for CAS server with ',' delimiter
+  # Ensure order of DN elements is proper for CAS server
   def format_dn_element_order
     formatted_dn = split_by_delimiter.reverse.join(delimiter)
     if dn_begins_properly?(formatted_dn)
-      dn_string = formatted_dn
-
+      @dn_string = formatted_dn
     else
-      fail("DN invalid format for LDAP authentication, DN:\r\n#{original_dn}")
+      fail "DN invalid format for LDAP authentication, DN:\r\n#{original_dn}"
     end
   end
 
   # Verify DN starts with 'CN='
   def dn_begins_properly?(dn_str)
-    dn_str.nil? ? false : (dn_str.start_with?("CN=") || dn_str.start_with?("#{delimiter}CN="))
+    if dn_str.nil?
+      false
+    else
+      dn_str.start_with?('CN=') || dn_str.start_with?("#{delimiter}CN=")
+    end
   end
 
   # Regex to match the DN delimiter by getting the 2nd key non-word predecessor
@@ -122,56 +134,59 @@ class DN
       logger.debug("DN.identify_delimeter: #{dn_string}")
       delimiter_regexp.match(dn_string)[1]
     rescue
-      fail DnDelimiterUnparsableError, "DN delimiter could not be identified
+      raise DnDelimiterUnparsableError, "DN delimiter could not be identified
              \r\nPlease ensure your string complies with RFC1779 formatting."
     end
   end
 
+  # common name string representation
   def cn_string
     dynamic_strings('cn', cn.class)
   end
 
+  # locality name string representation
   def l_string
     dynamic_strings('l', l.class)
   end
 
+  # state or province name string representation
   def st_string
     dynamic_strings('st', st.class)
   end
 
+  # organization name string representation
   def o_string
     dynamic_strings('o', o.class)
   end
 
+  # organizational unit name string representation
   def ou_string
     dynamic_strings('ou', ou.class)
   end
 
+  # country name string representation
   def c_string
     dynamic_strings('c', c.class)
   end
 
+  # street address string representation
   def street_string
     dynamic_strings('street', street.class)
   end
 
+  # domain component string representation
   def dc_string
     dynamic_strings('dc', dc.class)
   end
 
-  # Identify which RDN string formatteer to call by value's class
+  # uid string representation
+  def uid_string
+    dynamic_strings('uid', uid.class)
+  end
+
+  # Dynamically format the "#{attr}_string" method by value's class type
   def dynamic_strings(getter_method, value_class)
-    case value_class.to_s
-    when Array.to_s
-      dn_array_to_string(getter_method)
-    when Hash.to_s
-      dn_hash_to_string(getter_method)
-    when String.to_s
-      dn_string_to_string(getter_method)
-    else
-      logger.error "Invalid string accessor method class: #{value_class}"
-      fail "Invalid string accessor method class: #{value_class}"
-    end
+    send("dn_#{value_class.to_s.downcase}_to_string".to_sym, getter_method)
   end
 
   # NOTE:
@@ -180,10 +195,10 @@ class DN
 
   # Dynamically define a method to return DN array values as string format
   def dn_array_to_string(getter_method)
-    return_string = ""
-    value = self.send(getter_method.to_sym)
+    return_string = ''
+    value = send(getter_method.to_sym)
     value.each do |element|
-      return_string += "," unless return_string.empty?
+      return_string += ',' unless return_string.empty?
       return_string += "#{getter_method.to_s.upcase}=#{element}"
     end
 
@@ -192,10 +207,10 @@ class DN
 
   # Dynamically define a method to return DN hash values as string format
   def dn_hash_to_string(getter_method)
-    return_string = ""
-    value = self.send(getter_method.to_sym)
+    return_string = ''
+    value = send(getter_method.to_sym)
     value.each do |key, string|
-      return_string += "+" unless return_string.empty?
+      return_string += '+' unless return_string.empty?
       return_string += "#{key}=#{string}"
     end
 
@@ -204,6 +219,6 @@ class DN
 
   # Dynamically define a method to return DN string values as string format
   def dn_string_to_string(getter_method)
-    "#{getter_method.to_s.upcase}=#{self.send(getter_method.to_sym)}"
+    "#{getter_method.to_s.upcase}=#{send(getter_method.to_sym)}"
   end
 end
