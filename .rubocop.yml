@@ -2,6 +2,7 @@ AllCops:
   Exclude:
   - 'dnc.gemspec'
   - 'lib/dnc/version.rb'
+  - 'lib/blank.rb'
   - 'spec/**/*'
   - 'vendor/cache/**/*'
   - 'vendor/bundle/**/*'

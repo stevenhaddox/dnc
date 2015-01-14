@@ -43,7 +43,7 @@ class DN
   def to_s
     return_string = ''
     @string_order.each do |string_name|
-      unless send(string_name.to_sym).nil? || send(string_name.to_sym).empty?
+      unless send(string_name.to_sym).blank?
         return_string += ',' unless return_string.empty?
         return_string += send("#{string_name}_string".to_sym)
       end
@@ -85,11 +85,10 @@ class DN
     rdn_array = rdn.split('=')
     method = rdn_array[0].downcase.to_sym
     value  = rdn_array[1]
-    if (send(method).nil? || send(method).empty?)
-      send("#{method}=", value)
+    if send(method).blank?
+      assign_rdn_as_string(method, value)
     else
-      send("#{method}=", Array.wrap(send(method)))
-      send("#{method}").push(value)
+      assign_rdn_as_array(method, value)
     end
   end
 
@@ -102,6 +101,15 @@ class DN
     end
 
     send("#{rdn_keypairs.keys.first.downcase}=", rdn_keypairs)
+  end
+
+  def assign_rdn_as_string(method_name, value)
+    send("#{method_name}=", value)
+  end
+
+  def assign_rdn_as_array(method_name, value)
+    send("#{method_name}=", Array.wrap(send(method_name)))
+    send("#{method_name}").push(value)
   end
 
   # Ensure order of DN elements is proper for CAS server
@@ -130,13 +138,11 @@ class DN
 
   # Identify and set the DN delimiter
   def identify_delimiter
-    begin
-      logger.debug("DN.identify_delimeter: #{dn_string}")
-      delimiter_regexp.match(dn_string)[1]
+    logger.debug("DN.identify_delimeter: #{dn_string}")
+    delimiter_regexp.match(dn_string)[1]
     rescue
       raise DnDelimiterUnparsableError, "DN delimiter could not be identified
              \r\nPlease ensure your string complies with RFC1779 formatting."
-    end
   end
 
   # common name string representation
