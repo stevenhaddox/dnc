@@ -5,6 +5,7 @@ class DnDelimiterUnparsableError < TypeError; end
 # Custom exception for strings that can't be parsed as per RFC1779
 class DnStringUnparsableError < TypeError; end
 
+# rubocop:disable ClassLength
 # Accepts various DN strings and returns a DN object
 class DN
   attr_accessor :original_dn, :dn_string, :delimiter, :transformation,
@@ -145,49 +146,16 @@ class DN
              \r\nPlease ensure your string complies with RFC1779 formatting."
   end
 
-  # common name string representation
-  def cn_string
-    dynamic_strings('cn', cn.class)
-  end
+  def method_missing(method_name)
+    # Catch methods that end with _string
+    method_match = method_name.to_s.match(/(.+)_string\z/)
+    unless method_match.blank?
+      method = method_match[1]
+      method_class = send(method.to_sym).class
+      return send(:dynamic_strings, method.to_s, method_class)
+    end
 
-  # locality name string representation
-  def l_string
-    dynamic_strings('l', l.class)
-  end
-
-  # state or province name string representation
-  def st_string
-    dynamic_strings('st', st.class)
-  end
-
-  # organization name string representation
-  def o_string
-    dynamic_strings('o', o.class)
-  end
-
-  # organizational unit name string representation
-  def ou_string
-    dynamic_strings('ou', ou.class)
-  end
-
-  # country name string representation
-  def c_string
-    dynamic_strings('c', c.class)
-  end
-
-  # street address string representation
-  def street_string
-    dynamic_strings('street', street.class)
-  end
-
-  # domain component string representation
-  def dc_string
-    dynamic_strings('dc', dc.class)
-  end
-
-  # uid string representation
-  def uid_string
-    dynamic_strings('uid', uid.class)
+    super
   end
 
   # Dynamically format the "#{attr}_string" method by value's class type
