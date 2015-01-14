@@ -29,4 +29,3 @@ class String
     new_dn
   end
 end
-

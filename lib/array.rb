@@ -2,7 +2,6 @@
 # Extend the core Array class to include `.wrap`
 #
 class Array
-
   # Duplication of Ruby on Rails Array#wrap method
   def self.wrap(object)
     if object.nil?
