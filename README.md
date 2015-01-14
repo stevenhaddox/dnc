@@ -1,4 +1,6 @@
-# Distinguished Name (DN) Converter
+# Distinguished Name (DN) Converter [![Gem Version](https://badge.fury.io/rb/dnc.png)](http://badge.fury.io/rb/dnc)
+
+[![Travis CI](https://travis-ci.org/stevenhaddox/dnc.svg?branch=master)](https://travis-ci.org/stevenhaddox/dnc) [![Dependency Status](https://gemnasium.com/stevenhaddox/dnc.png)](https://gemnasium.com/stevenhaddox/dnc) [![Coverage Status](https://coveralls.io/repos/stevenhaddox/dnc/badge.png)](https://coveralls.io/r/stevenhaddox/dnc) [![Code Climate](https://codeclimate.com/github/stevenhaddox/dnc/badges/gpa.svg)](https://codeclimate.com/github/stevenhaddox/dnc) [![Inline docs](http://inch-ci.org/github/stevenhaddox/dnc.svg?branch=master)](http://inch-ci.org/github/stevenhaddox/dnc)
 
 Convert multiple X509 DN strings into a consistent format.
 
