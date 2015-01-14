@@ -1,7 +1,9 @@
 require 'simplecov'
 require 'coveralls'
-SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter,
+                        Coveralls::SimpleCov::Formatter]
 SimpleCov.start do
+  add_group "Models", "lib/dnc"
   add_filter '/spec/'
 end
 # SimpleCov always comes before **anything** else
