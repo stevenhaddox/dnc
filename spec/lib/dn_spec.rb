@@ -59,6 +59,13 @@ describe DN do
       expect(dn.to_s).to eq(dn_string)
     end
 
+    it "should support customized return order for RDN elements" do
+      dn_string = 'CN=Last First M (initial),O=rb,OU=people,C=us,DC=org,DC=example'
+      dn = DN.new(dn_string: dn_string, string_order: %w(cn ou o dc c))
+      customized_string = 'CN=LAST FIRST M (INITIAL),OU=PEOPLE,O=RB,DC=ORG,DC=EXAMPLE,C=US'
+      expect(dn.to_s).to eq(customized_string)
+    end
+
 #    it "should parse common DN formats into DN objects" do
 #      File.readlines('spec/fixtures/common_dns.txt').each do |line|
 #        dn_in = line.rstrip.split('%')[0]
