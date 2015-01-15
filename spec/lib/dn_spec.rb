@@ -66,12 +66,23 @@ describe DN do
       expect(dn.to_s).to eq(customized_string)
     end
 
-#    it "should parse common DN formats into DN objects" do
-#      File.readlines('spec/fixtures/common_dns.txt').each do |line|
-#        dn_in = line.rstrip.split('%')[0]
-#        dn_out = line.rstrip.split('%')[1]
-#        expect(DN.new(dn_string: dn_in).to_s).to eq(dn_out)
-#      end
-#    end
+    it "should parse custom DN formats into DN objects" do
+      # Sample data sets
+      File.readlines('spec/fixtures/custom_sort_dns.txt').each do |line|
+        dn_in = line.rstrip.split('%')[0]
+        dn_out = line.rstrip.split('%')[1]
+        custom_order = %w(cn l st ou o c street dc uid)
+        expect(DN.new(dn_string: dn_in, string_order: custom_order).to_s).to eq(dn_out)
+      end
+    end
+
+    it "should parse common DN formats into DN objects" do
+      pending "Implement common DN test strings"
+      File.readlines('spec/fixtures/common_dns.txt').each do |line|
+        dn_in = line.rstrip.split('%')[0]
+        dn_out = line.rstrip.split('%')[1]
+        expect(DN.new(dn_string: dn_in).to_s).to eq(dn_out)
+      end
+    end
   end
 end
