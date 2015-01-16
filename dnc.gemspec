@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Steven Haddox"]
   spec.email         = ["steven@haddox.us"]
   spec.summary       = %q{Distinguished Name Converter}
-  spec.description   = %q{Convert multiple X509 DN strings into a consistent(ish) format.}
+  spec.description   = %q{Convert multiple X509 DN strings into a consistent format.}
   spec.homepage      = "https://github.com/stevenhaddox/dnc"
   spec.license       = "MIT"
 
