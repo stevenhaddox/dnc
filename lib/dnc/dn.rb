@@ -171,14 +171,14 @@ class DN
 
   # Dynamically define a method to return DN array values as string format
   def dn_array_to_string(getter_method)
-    return_string = ''
+    tmp_str = ''
     value = send(getter_method.to_sym)
-    value.each do |element|
-      return_string += ',' unless return_string.empty?
-      return_string += "#{getter_method.to_s.upcase}=#{element}"
+    value.each do |el|
+      tmp_str += ',' unless tmp_str.empty?
+      tmp_str += "#{getter_method.to_s.send(@transformation.to_sym)}=#{el}"
     end
 
-    return_string
+    tmp_str
   end
 
   # Dynamically define a method to return DN hash values as string format
