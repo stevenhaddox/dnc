@@ -7,7 +7,6 @@
 /pkg/
 /spec/reports/
 /tmp/
-/certs
 *.bundle
 *.so
 *.o
