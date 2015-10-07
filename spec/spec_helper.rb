@@ -1,12 +1,5 @@
-require 'simplecov'
-require 'coveralls'
-SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter,
-                        Coveralls::SimpleCov::Formatter]
-SimpleCov.start do
-  add_group "Models", "lib/dnc"
-  add_filter '/spec/'
-end
-# SimpleCov always comes before **anything** else
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
 
 require_relative '../lib/dnc'
 require 'awesome_print'

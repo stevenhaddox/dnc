@@ -23,7 +23,7 @@ class DN
   # @param opts[:string_order] [Array] Specify the order of RDNs for .to_s
   # @return [DN]
   def initialize(opts = {})
-    @dn_string      = opts[:dn_string]
+    @dn_string = opts[:dn_string]
     fail 'dnc: dn_string parameter is **required**' if dn_string.nil?
     @original_dn    = dn_string
     @logger         = opts[:logger] || logger
@@ -143,8 +143,8 @@ class DN
   def identify_delimiter
     logger.debug("DN.identify_delimeter: #{dn_string}")
     delimiter_regexp.match(dn_string)[1]
-    rescue
-      raise DnDelimiterUnparsableError, "DN delimiter could not be identified
+  rescue
+    raise DnDelimiterUnparsableError, "DN delimiter could not be identified
              \r\nPlease ensure your string complies with RFC1779 formatting."
   end
 
