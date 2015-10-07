@@ -77,7 +77,7 @@ describe DN do
     end
 
     it "should parse common DN formats into DN objects" do
-      pending "Implement common DN test strings"
+      #TODO: Integrate the tests from spec/fixtures/common_dns.txt.todo
       File.readlines('spec/fixtures/common_dns.txt').each do |line|
         dn_in = line.rstrip.split('%')[0]
         dn_out = line.rstrip.split('%')[1]
