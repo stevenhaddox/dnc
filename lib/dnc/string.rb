@@ -1,4 +1,4 @@
-require 'dnc'
+require 'dnc/dn'
 
 #
 # Extend the core String class to include `.to_dn` && `.to_dn!`

@@ -1,4 +1,6 @@
 require 'logging'
+require 'blank'
+require 'array'
 
 # Custom exception for strings that can't be parsed as per RFC1779
 class DnDelimiterUnparsableError < TypeError; end
@@ -35,9 +37,7 @@ class DN
 
   # logger method to return Rails logger if defined, else logging logger
   def logger
-    return @logger if @logger
-    logger = Logging.logger[self]
-    @logger ||= Kernel.const_defined?('Rails') ? Rails.logger : logger
+    @logger ||= Kernel.const_defined?('Rails') ? Rails.logger : Logging.logger[self]
   end
 
   # Convert DN object into a string (order follows RFC4514 LDAP specifications)
