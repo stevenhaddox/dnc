@@ -37,7 +37,11 @@ class DN
 
   # logger method to return Rails logger if defined, else logging logger
   def logger
-    @logger ||= Kernel.const_defined?('Rails') ? Rails.logger : Logging.logger[self]
+    unless defined? @logger
+      logger = Logging.logger[self]
+      @logger = Kernel.const_defined?('Rails') ? Rails.logger : logger
+    end
+    @logger
   end
 
   # Convert DN object into a string (order follows RFC4514 LDAP specifications)
