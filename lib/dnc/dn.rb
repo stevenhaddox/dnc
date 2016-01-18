@@ -129,13 +129,7 @@ class DN
 
   # Verify DN starts with 'CN='
   def dn_begins_properly?(dn_str)
-    if dn_str.nil?
-      false
-    else
-      with_delim = "#{delimiter}/CN=".send(@transformation.to_sym)
-      without_delim = 'CN='.send(@transformation.to_sym)
-      dn_str.start_with?(without_delim, with_delim)
-    end
+    dn_str.nil? ? false : /^#{Regexp.escape(delimiter)}?CN/i.match(dn_str)
   end
 
   # Regex to match the DN delimiter by getting the 2nd key non-word predecessor
