@@ -84,5 +84,10 @@ describe DN do
         expect(DN.new(dn_string: dn_in).to_s).to eq(dn_out)
       end
     end
+
+    it "should support simple string transformation" do
+      dn_string = 'CN=Last First M (initial),O=rb,OU=people,C=us,DC=org,DC=example'
+      expect(DN.new(dn_string: dn_string, transformation: 'to_s').to_s).to eq(dn_string)
+    end
   end
 end
