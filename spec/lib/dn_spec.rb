@@ -95,5 +95,11 @@ describe DN do
       dn_out = dn_string.gsub(/([^,]*)=/) { |i| i.upcase }
       expect(DN.new(dn_string: dn_string, transformation: 'to_s').to_s).to eq(dn_out)
     end
+
+    it "should support not just idempotent transformation functions" do
+      dn_string = 'CN=Last First M (initial),O=rb,OU=people,C=us,DC=org,DC=example'
+      dn_out = dn_string.swapcase.gsub(/([^,]*)=/) { |i| i.upcase }
+      expect(DN.new(dn_string: dn_string, transformation: 'swapcase').to_s).to eq(dn_out)
+    end
   end
 end
