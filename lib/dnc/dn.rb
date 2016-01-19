@@ -54,7 +54,7 @@ class DN
       end
     end
 
-    return_string.send(@transformation.to_sym)
+    return_string
   end
 
   # Split passed DN by identified delimiter
