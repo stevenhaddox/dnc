@@ -26,7 +26,7 @@ class DN
   # @return [DN]
   def initialize(opts = {})
     @dn_string = opts[:dn_string]
-    fail 'dnc: dn_string parameter is **required**' if dn_string.nil?
+    raise 'dnc: dn_string parameter is **required**' if dn_string.nil?
     @original_dn    = dn_string
     @logger         = opts[:logger] || logger
     @transformation = opts[:transformation] || 'upcase'
@@ -114,7 +114,7 @@ class DN
 
   def assign_rdn_as_array(method_name, value)
     send("#{method_name}=", Array.wrap(send(method_name)))
-    send("#{method_name}").push(value)
+    send(method_name).push(value)
   end
 
   # Ensure order of DN elements is proper for CAS server
@@ -123,7 +123,7 @@ class DN
     if dn_begins_properly?(formatted_dn)
       @dn_string = formatted_dn
     else
-      fail "DN invalid format for LDAP authentication, DN:\r\n#{original_dn}"
+      raise "DN invalid format for LDAP authentication, DN:\r\n#{original_dn}"
     end
   end
 
