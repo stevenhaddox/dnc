@@ -134,7 +134,7 @@ class DN
     else
       with_delim = "#{delimiter}/CN=".send(@transformation.to_sym)
       without_delim = 'CN='.send(@transformation.to_sym)
-      dn_str.start_with?(without_delim) || dn_str.start_with?(with_delim)
+      dn_str.start_with?(without_delim, with_delim)
     end
   end
 
