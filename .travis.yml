@@ -14,4 +14,5 @@ before_install:
 
 env:
   - RACK_ENV=test
+
 script: 'bundle exec rake'
