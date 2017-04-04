@@ -1,3 +1,4 @@
+sudo: false
 language: ruby
 cache: bundler
 
@@ -10,5 +11,8 @@ rvm:
 
 before_install:
   - gem install bundler
+
+env:
+  - RACK_ENV=test
 
 script: 'bundle exec rake'

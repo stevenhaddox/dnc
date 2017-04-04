@@ -54,7 +54,7 @@ class DN
       end
     end
 
-    return_string.send(@transformation.to_sym)
+    return_string
   end
 
   # Split passed DN by identified delimiter
@@ -129,13 +129,7 @@ class DN
 
   # Verify DN starts with 'CN='
   def dn_begins_properly?(dn_str)
-    if dn_str.nil?
-      false
-    else
-      with_delim = "#{delimiter}/CN=".send(@transformation.to_sym)
-      without_delim = 'CN='.send(@transformation.to_sym)
-      dn_str.start_with?(without_delim, with_delim)
-    end
+    dn_str.nil? ? false : /^#{Regexp.escape(delimiter)}?CN/i.match(dn_str)
   end
 
   # Regex to match the DN delimiter by getting the 2nd key non-word predecessor
@@ -179,7 +173,7 @@ class DN
     value = send(getter_method.to_sym)
     value.each do |el|
       tmp_str += ',' unless tmp_str.empty?
-      tmp_str += "#{getter_method.to_s.send(@transformation.to_sym)}=#{el}"
+      tmp_str += "#{getter_method.to_s.upcase}=#{el}"
     end
 
     tmp_str
@@ -191,7 +185,7 @@ class DN
     value = send(getter_method.to_sym)
     value.each do |key, string|
       return_string += '+' unless return_string.empty?
-      return_string += "#{key}=#{string}"
+      return_string += "#{key.upcase}=#{string}"
     end
 
     return_string
