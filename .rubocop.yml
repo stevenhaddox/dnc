@@ -1,9 +1,10 @@
+inherit_from: .rubocop_todo.yml
 AllCops:
   Exclude:
-  - 'dnc.gemspec'
-  - 'lib/dnc/version.rb'
-  - 'lib/blank.rb'
+  - 'omniauth-casport.gemspec'
+  - 'lib/omniauth/casport/version.rb'
   - 'spec/**/*'
   - 'vendor/cache/**/*'
   - 'vendor/bundle/**/*'
   - '**/gems/**/*'
+  - 'omniauth-dice.gemspec'
