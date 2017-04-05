@@ -84,5 +84,22 @@ describe DN do
         expect(DN.new(dn_string: dn_in).to_s).to eq(dn_out)
       end
     end
+
+    it "should support simple string transformation" do
+      dn_string = 'CN=Last First M (initial),O=rb,OU=people,C=us,DC=org,DC=example'
+      expect(DN.new(dn_string: dn_string, transformation: 'to_s').to_s).to eq(dn_string)
+    end
+
+    it "should support different case cn" do
+      dn_string = 'cn=Last First M (initial),O=rb,OU=people,C=us,DC=org,DC=example'
+      dn_out = dn_string.gsub(/([^,]*)=/) { |i| i.upcase }
+      expect(DN.new(dn_string: dn_string, transformation: 'to_s').to_s).to eq(dn_out)
+    end
+
+    it "should support not just idempotent transformation functions" do
+      dn_string = 'CN=Last First M (initial),O=rb,OU=people,C=us,DC=org,DC=example'
+      dn_out = dn_string.swapcase.gsub(/([^,]*)=/) { |i| i.upcase }
+      expect(DN.new(dn_string: dn_string, transformation: 'swapcase').to_s).to eq(dn_out)
+    end
   end
 end

@@ -54,7 +54,7 @@ class DN
       end
     end
 
-    return_string.send(@transformation.to_sym)
+    return_string
   end
 
   # Split passed DN by identified delimiter
@@ -179,7 +179,7 @@ class DN
     value = send(getter_method.to_sym)
     value.each do |el|
       tmp_str += ',' unless tmp_str.empty?
-      tmp_str += "#{getter_method.to_s.send(@transformation.to_sym)}=#{el}"
+      tmp_str += "#{getter_method.to_s.upcase}=#{el}"
     end
 
     tmp_str
@@ -191,7 +191,7 @@ class DN
     value = send(getter_method.to_sym)
     value.each do |key, string|
       return_string += '+' unless return_string.empty?
-      return_string += "#{key}=#{string}"
+      return_string += "#{key.upcase}=#{string}"
     end
 
     return_string
