@@ -1,10 +1,12 @@
 language: ruby
 cache: bundler
+sudo: false
 
 rvm:
-  - ruby-head
+  - 2.4.1
+  - 2.3.3
   - 2.2.3
-  - 2.1.6
+  - 2.1.9
   - 2.0.0
   - 1.9.3
 
